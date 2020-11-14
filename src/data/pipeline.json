@@ -1,0 +1,15 @@
+{
+    "name": "Sample pipeline",
+    "desc": "Description of the pipeline",
+    "versions": {
+        "pipen": "0.0.1",
+        "pipen-report": "0.0.1",
+        "pipen-report-svx": "0.0.1"
+    },
+    "processes": [
+        {"name": "Process 1", "slug": "process-1", "desc": "The first process"},
+        {"name": "Process 2", "slug": "process-2", "desc": "The second process"},
+        {"name": "Process 3", "slug": "process-3", "desc": "The third process"},
+        {"name": "Process 4", "slug": "process-4", "desc": "The forth process"}
+    ]
+}

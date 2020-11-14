@@ -1,0 +1,15 @@
+---
+layout: cover
+---
+
+<script>
+import pipeline from '../../data/pipeline.json';
+import ProcCard from '../../components/ProcCard.svelte';
+</script>
+
+
+{#each pipeline.processes as proc}
+
+<ProcCard name={proc.name} slug={proc.slug} desc={proc.desc} />
+
+{/each}

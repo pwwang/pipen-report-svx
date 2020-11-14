@@ -1,0 +1,167 @@
+const getPreprocessor = require('svelte-preprocess');
+const CopyPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const postcssPlugins = require('./postcss.config.js');
+const { mdsvex } = require('mdsvex');
+
+const mode = process.argv.indexOf('--mode') === -1
+    ? process.env.NODE_ENV
+    : (
+        process.argv[process.argv.indexOf('--mode') + 1] ||
+        process.env.NODE_ENV ||
+        'development'
+    );
+
+console.log('MODE:', mode);
+const isDevBuild = mode !== 'production';
+
+const outdir = "<%- outdir %>";
+
+const cssConfig = {
+    test: /\.(sa|sc|c)ss$/,
+    use: [
+        MiniCssExtractPlugin.loader,
+        'css-loader',
+        {
+            loader: 'postcss-loader',
+            options: { extract: true, plugins: postcssPlugins(false) }
+        },
+    ],
+};
+
+function singleHtmlPlugin(name) {
+    let title, toc;
+    if (name === 'index') {
+        title = 'Report Cover';
+        toc = '';
+    } else {
+        title = `Report: ${name}`;
+        toc = `
+            <link rel="stylesheet" href="public/static/toc.css" type="text/css"></link>
+            <script defer type="text/javascript" src="public/static/toc.js"></script>
+        `
+    }
+    return new HtmlWebpackPlugin({
+        filename: `${name}.html`,
+        // ERROR in Template execution failed: TypeError: Class constructor loader_js_public_Public cannot be invoked without 'new'
+        // template: './public/index.html',
+        templateContent: `
+          <html>
+            <head>
+              <title>${title}</title>
+              ${toc}
+            </head>
+            <body>
+
+            </body>
+          </html>
+        `,
+        chunks: [name],
+        minify: !isDevBuild
+            ? {
+                removeComments: true,
+                collapseWhitespace: true,
+                minifyCSS: true,
+            }
+            : true,
+    });
+}
+
+function multiHtmlPlugin(entries) {
+    const pageNames = Object.keys(entries);
+    return pageNames.map(singleHtmlPlugin);
+}
+
+
+const preprocess = getPreprocessor({
+    transformers: {
+        postcss: {
+            plugins: postcssPlugins()
+        }
+    }
+});
+const entry = <%- entries %>;
+const htmlPlugins = multiHtmlPlugin(entry);
+
+const cleanOptions = { verbose: true, dry: false, exclude: [] };
+const mdsvexOptions = {
+    layout: {
+        cover: 'src/layouts/cover.svelte',
+        proc: 'src/layouts/proc.svelte'
+    },
+    remarkPlugins: [require('remark-containers')],
+    rehypePlugins: [require('rehype-slug'), require('rehype-toc')]
+};
+
+module.exports = {
+    entry,
+    output: {
+        path: outdir,
+        filename: 'public/js/[name].[hash].js',
+        chunkFilename: 'public/js/[name].[chunkhash].js',
+    },
+    mode,
+    module: {
+        rules: [
+            cssConfig,
+            {
+                test: /.(svelte|html|svx)$/,
+                use: {
+                    loader: 'svelte-loader', options: {
+                        dev: isDevBuild,
+                        preprocess: [preprocess, mdsvex(mdsvexOptions)],
+                    }
+                },
+                exclude: ['/node_modules/']
+            },
+            {
+                test: /\.(png|jpe?g|gif|svg)$/,
+                loader: 'file-loader',
+                options: { name: 'public/images/[name].[hash:7].[ext]' }
+            },
+            {
+                test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+                loader: 'file-loader',
+                options: {
+                    limit: 10000,
+                    name: 'public/fonts/[name].[hash:7].[ext]',
+                },
+            }
+        ]
+    },
+    resolve: {
+        extensions: ['.mjs', '.js', '.json', '.svelte', '.html', '.svx'],
+        mainFields: ['svelte', 'module', 'main'],
+    },
+    performance: {
+        hints: false
+    },
+
+    plugins: [
+        new CleanWebpackPlugin(cleanOptions),
+        new MiniCssExtractPlugin({
+            filename: 'public/css/[name].[contenthash].css',
+        }),
+        new CopyPlugin([{ from: './public/static', to: './public/static' }]),
+        ...htmlPlugins,
+    ]
+}
+
+if (!isDevBuild) {
+    module.exports.optimization = {
+        minimize: true,
+    }
+} else {
+    module.exports.devtool = '#source-map';
+
+    module.exports.devServer = {
+        port: 9000,
+        host: "localhost",
+        historyApiFallback: true,
+        watchOptions: { aggregateTimeout: 300, poll: 1000 },
+        contentBase: './public',
+        open: true
+    };
+}
