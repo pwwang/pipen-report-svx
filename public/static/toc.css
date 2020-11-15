@@ -14,7 +14,7 @@
     margin: 0;
   }
 
-  .toc ol ul { padding-left: 2em; }
+  .toc ol ol { padding-left: 1rem; }
 
   .toc li a {
     display: inline-block;

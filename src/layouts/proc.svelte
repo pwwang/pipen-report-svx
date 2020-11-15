@@ -13,9 +13,35 @@ export let proc_desc;
         </div>
     </div>
 
-    <div class="border-l-2 flex-grow m-5 ml-64 pl-10 mt-32">
+    <div class="container border-l-2 flex-grow m-5 ml-64 pl-10 mt-32">
         <slot></slot>
     </div>
 
     <Footer />
 </div>
+
+<style>
+:global(.container h1) {
+    margin-top: var(--m-4);
+    font-size: var(--text-3xl);
+}
+:global(.container h2) {
+    margin-top: var(--m-2);
+    font-size: var(--text-2xl);
+}
+:global(.container h3) {
+    margin-top: var(--m-1);
+    font-size: var(--text-xl);
+}
+:global(.container h4) {
+    margin-top: var(--m-1);
+    font-size: var(--text-lg);
+}
+:global(.container h5) {
+    margin-top: var(--m-1);
+    font-size: var(--text-base);
+}
+:global(.container p) {
+    margin-bottom: var(--m-1);
+}
+</style>

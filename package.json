@@ -33,6 +33,7 @@
     "puppeteer": "^5.4.1",
     "rehype-slug": "^4.0.1",
     "rehype-toc": "^3.0.2",
+    "remark-admonitions": "^1.2.1",
     "remark-containers": "^1.2.0",
     "svelte": "^3.14.1",
     "svelte-loader": "~2.13.0",
