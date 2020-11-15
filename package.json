@@ -11,6 +11,29 @@
     "pipen-report-svx": "bin/pipen-report-svx.js"
   },
   "devDependencies": {
+  },
+  "scripts": {
+    "build": "webpack --mode production",
+    "watch": "webpack --watch",
+    "start": "webpack-dev-server --hot --inline --mode development"
+  },
+  "dependencies": {
+    "apr-for-each": "^3.0.3",
+    "apr-intercept": "^3.0.4",
+    "cheerio": "^1.0.0-rc.3",
+    "cp-file": "^9.0.0",
+    "ejs": "^3.1.5",
+    "is-relative-url": "^3.0.0",
+    "js-yaml": "^3.14.0",
+    "lodash.uniqby": "^4.7.0",
+    "mz": "^2.7.0",
+    "pipen-smelte": "^0.0.0",
+    "postcss-input-range": "^4.0.0",
+    "postcss-url": "^8.0.0",
+    "rev-hash": "^3.0.0",
+    "tailwindcss-elevation": "^0.3.1",
+    "uuid": "^8.3.1",
+    "yargs": "^16.1.0",
     "@fullhuman/postcss-purgecss": "^1.3.0",
     "autoprefixer": "^9.6.0",
     "clean-webpack-plugin": "^3.0.0",
@@ -30,7 +53,6 @@
     "postcss-preset-env": "^6.6.0",
     "postcss-purgecss": "^2.0.3",
     "pre-commit": "^1.2.2",
-    "puppeteer": "^5.4.1",
     "rehype-slug": "^4.0.1",
     "rehype-toc": "^3.0.2",
     "remark-admonitions": "^1.2.1",
@@ -43,20 +65,5 @@
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
-  },
-  "scripts": {
-    "build": "webpack --mode production",
-    "watch": "webpack --watch",
-    "start": "webpack-dev-server --hot --inline --mode development"
-  },
-  "dependencies": {
-    "done-webpack-plugin": "^1.0.3",
-    "ejs": "^3.1.5",
-    "pipen-smelte": "^0.0.0",
-    "postcss-input-range": "^4.0.0",
-    "postcss-url": "^8.0.0",
-    "tailwindcss-elevation": "^0.3.1",
-    "uuid": "^8.3.1",
-    "yargs": "^16.1.0"
   }
 }

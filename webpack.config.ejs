@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const postcssPlugins = require('./postcss.config.js');
 const { mdsvex } = require('mdsvex');
+const path = require('path');
 
 const mode = process.argv.indexOf('--mode') === -1
     ? process.env.NODE_ENV
@@ -41,6 +42,7 @@ function singleHtmlPlugin(name) {
         extraHeaders = `
             <link rel="stylesheet" href="public/static/admonitions.css" type="text/css"></link>
             <link rel="stylesheet" href="public/static/toc.css" type="text/css"></link>
+            <link rel="stylesheet" href="public/static/prism.css" type="text/css"></link>
             <script defer type="text/javascript" src="public/static/toc.js"></script>
         `
     }
@@ -70,11 +72,6 @@ function singleHtmlPlugin(name) {
     });
 }
 
-function multiHtmlPlugin(entries) {
-    const pageNames = Object.keys(entries);
-    return pageNames.map(singleHtmlPlugin);
-}
-
 
 const preprocess = getPreprocessor({
     transformers: {
@@ -84,18 +81,27 @@ const preprocess = getPreprocessor({
     }
 });
 const entry = <%- entries %>;
-const htmlPlugins = multiHtmlPlugin(entry);
+const htmlPlugins = Object.keys(entry).map(singleHtmlPlugin);
 
-const cleanOptions = { verbose: true, dry: false, exclude: [] };
+const cleanOptions = {
+    cleanOnceBeforeBuildPatterns: ['**/*', '!media', '!media/**'],
+    verbose: true,
+    dry: false,
+    exclude: []
+};
 const mdsvexOptions = {
     layout: {
         cover: 'src/layouts/cover.svelte',
         proc: 'src/layouts/proc.svelte'
     },
-    remarkPlugins: [require('remark-containers'), require('remark-admonitions')],
+    remarkPlugins: [
+        require('remark-containers'),
+        require('remark-admonitions'),
+        [require('./src/remark-media'), { destinationDir: path.join(outdir, 'media') }],
+    ],
     rehypePlugins: [
         require('rehype-slug'),
-        [require('rehype-toc'), {headings: ["h1", "h2", "h3"]}]
+        [require('rehype-toc'), { headings: ["h1", "h2", "h3"] }]
     ]
 };
 
@@ -120,11 +126,11 @@ module.exports = {
                 },
                 exclude: ['/node_modules/']
             },
-            {
-                test: /\.(png|jpe?g|gif|svg)$/,
-                loader: 'file-loader',
-                options: { name: 'public/images/[name].[hash:7].[ext]' }
-            },
+            // {
+            //     test: /\.(png|jpe?g|gif|svg)$/,
+            //     loader: 'file-loader',
+            //     options: { name: 'public/images/[name].[hash:7].[ext]' }
+            // },
             {
                 test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
                 loader: 'file-loader',

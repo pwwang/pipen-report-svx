@@ -1,11 +1,13 @@
 ---
 layout: proc
 proc_name: Process 1
+proc_slug: process-1
 proc_desc: The first process
+__file__: /home/pwwang/pipen-report-svx/src/pages/process-1/App.svx
 ---
 
 <script>
-	let name = 'world';
+	let name = 'hello';
 </script>
 
 # Alpha
