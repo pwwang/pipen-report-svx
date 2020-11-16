@@ -1,15 +1,21 @@
 <script>
 import Footer from '../components/Footer.svelte';
+import { Icon } from 'pipen-smelte';
 
 export let proc_name;
 export let proc_desc;
 </script>
 
 <div class="flex flex-col min-h-full">
-    <div class="bg-primary-900 fixed w-full">
-        <div class="py-5 px-10 text-gray-50">
+    <div class="bg-primary-900 fixed w-full flex flex-row items-center">
+        <div class="py-5 px-10 text-gray-50 flex-grow">
             <h1 class="text-2xl">{proc_name}</h1>
             <p>{proc_desc}</p>
+        </div>
+        <div class="pr-10">
+            <a href="index.html" title="Back to Cover Page ...">
+                <Icon class="" color="white" reverse>exit_to_app</Icon>
+            </a>
         </div>
     </div>
 

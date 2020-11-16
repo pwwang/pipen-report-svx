@@ -32,7 +32,7 @@ const cssConfig = {
     ],
 };
 
-function singleHtmlPlugin(name) {
+function singleHtmlPlugin(name, hasCover) {
     let title, extraHeaders;
     if (name === 'index') {
         title = 'Report Cover';
@@ -43,8 +43,16 @@ function singleHtmlPlugin(name) {
             <link rel="stylesheet" href="public/static/admonitions.css" type="text/css"></link>
             <link rel="stylesheet" href="public/static/toc.css" type="text/css"></link>
             <link rel="stylesheet" href="public/static/prism.css" type="text/css"></link>
+            <link rel="stylesheet" href="public/static/icons.css" type="text/css"></link>
             <script defer type="text/javascript" src="public/static/toc.js"></script>
-        `
+        `;
+        if (!hasCover) {
+            extraHeaders += `
+                <style type="text/css">
+                a.back-to-cover: {display: none;}
+                </style>
+            `;
+        }
     }
     return new HtmlWebpackPlugin({
         filename: `${name}.html`,
@@ -81,7 +89,7 @@ const preprocess = getPreprocessor({
     }
 });
 const entry = <%- entries %>;
-const htmlPlugins = Object.keys(entry).map(singleHtmlPlugin);
+const htmlPlugins = Object.keys(entry).map(ent => singleHtmlPlugin(ent, 'index' in entry));
 
 const cleanOptions = {
     cleanOnceBeforeBuildPatterns: ['**/*', '!media', '!media/**'],
@@ -131,14 +139,14 @@ module.exports = {
             //     loader: 'file-loader',
             //     options: { name: 'public/images/[name].[hash:7].[ext]' }
             // },
-            {
-                test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-                loader: 'file-loader',
-                options: {
-                    limit: 10000,
-                    name: 'public/fonts/[name].[hash:7].[ext]',
-                },
-            }
+            // {
+            //     test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+            //     loader: 'file-loader',
+            //     options: {
+            //         limit: 10000,
+            //         name: 'public/fonts/[name].[hash:7].[ext]',
+            //     },
+            // }
         ]
     },
     resolve: {

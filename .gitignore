@@ -116,4 +116,6 @@ dist
 # Will be compiled by webpack.config.ejs
 webpack.config.js
 
+svxs/
+
 # End of https://www.toptal.com/developers/gitignore/api/node

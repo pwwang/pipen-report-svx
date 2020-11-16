@@ -17,3 +17,7 @@ import Footer from '../components/Footer.svelte';
 
     <Footer />
 </div>
+
+<style>
+:global(nav.toc) {display: none}
+</style>
