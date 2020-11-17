@@ -5,6 +5,8 @@ const frontmatter = require('@github-docs/frontmatter')
 const yaml = require('js-yaml');
 const ejs = require('ejs');
 const hash = require('object-hash');
+const rmdir = require("rimraf");
+const commandExists = require('command-exists');
 const { spawn } = require("child_process");
 
 const rootdir = path.dirname(__dirname);
@@ -17,11 +19,11 @@ module.exports = function(options) {
 
     if (fs.existsSync(options.tmpdir)) {
         fs.readdirSync(options.tmpdir)
-            .filter(p => !['node_modules', 'yarn.lock'].includes(p))
+            .filter(p => !['node_modules', 'yarn.lock', 'package-lock.json'].includes(p))
             .forEach(p => {
                 const pathToClean = path.join(options.tmpdir, p);
                 fs.lstatSync(pathToClean).isDirectory()
-                    ? fs.rmdirSync(pathToClean, {recursive: true})
+                    ? rmdir.sync(pathToClean)
                     : fs.unlinkSync(pathToClean);
             });
     } else {
@@ -135,7 +137,9 @@ ${content}
         );
     });
 
-    const cmd = spawn('bash', ['-c', `cd ${options.tmpdir}; yarn; yarn build`]);
+    const cmd = commandExists.sync('yarn')
+        ? spawn('bash', ['-c', `cd ${options.tmpdir}; yarn; yarn build`])
+        : spawn('bash', ['-c', `cd ${options.tmpdir}; npm i; npm build`]);
     cmd.stdout.pipe(process.stdout);
     cmd.stderr.pipe(process.stderr);
 };
