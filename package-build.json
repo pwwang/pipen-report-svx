@@ -61,6 +61,6 @@
   },
   "dependencies": {
     "svelte": "^3.14.1",
-    "pipen-smelte": "^0.0.0"
+    "pipen-smelte": "latest"
   }
 }

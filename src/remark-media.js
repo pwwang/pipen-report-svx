@@ -51,8 +51,8 @@ module.exports = (opts = {}) => {
             const fullpath = isRelativeUrl(url)
                 ? resolve(cwd, path ? dirname(path) : '', url)
                 : url;
-            console.log(fullpath);
-            if (!(await exists(fullpath))) {
+
+                if (!(await exists(fullpath))) {
                 return;
             }
 
@@ -82,6 +82,7 @@ module.exports = (opts = {}) => {
                     ['video[poster]', 'poster'],
                     ['object param[value]', 'value'],
                     ['a[href]', 'href'],
+                    ['DataTable[datafile]', 'datafile'],
                 ];
 
                 const urls = selectors.reduce((memo, [selector, attr]) => {
@@ -118,7 +119,7 @@ module.exports = (opts = {}) => {
             link: (...args) => handlers.url(...args),
             definition: (...args) => handlers.url(...args),
             image: (...args) => handlers.url(...args),
-            jsx: (...args) => handlers.html(...args),
+            jsx: (...args) => handlers.html(...args)
         };
 
         const newTree = await map(tree, async (node) => {
@@ -133,7 +134,6 @@ module.exports = (opts = {}) => {
         await ForEach(
             UniqBy(assets.filter(Boolean), 'filename'),
             async ({ fullpath, slug, filename }) => {
-                console.log('fullpath', fullpath);
                 return Cp(fullpath, join(destinationDir, slug, filename));
             },
         );
