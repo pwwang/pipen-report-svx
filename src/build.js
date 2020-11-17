@@ -139,7 +139,7 @@ ${content}
 
     const cmd = commandExists.sync('yarn')
         ? spawn('bash', ['-c', `cd ${options.tmpdir}; yarn; yarn build`])
-        : spawn('bash', ['-c', `cd ${options.tmpdir}; npm i; npm build`]);
+        : spawn('bash', ['-c', `cd ${options.tmpdir}; npm i; npm run build`]);
     cmd.stdout.pipe(process.stdout);
     cmd.stderr.pipe(process.stderr);
 };
