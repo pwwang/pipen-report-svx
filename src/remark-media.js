@@ -43,16 +43,15 @@ module.exports = (opts = {}) => {
         const assets = [];
 
         const handleUrl = async (url) => {
-            if (!isRelativeUrl(url)) {
-                return;
-            }
-
             const ext = extname(url);
             if (!ext || ignoreFileExtensions.includes(ext)) {
                 return;
             }
 
-            const fullpath = resolve(cwd, path ? dirname(path) : '', url);
+            const fullpath = isRelativeUrl(url)
+                ? resolve(cwd, path ? dirname(path) : '', url)
+                : url;
+            console.log(fullpath);
             if (!(await exists(fullpath))) {
                 return;
             }
@@ -134,6 +133,7 @@ module.exports = (opts = {}) => {
         await ForEach(
             UniqBy(assets.filter(Boolean), 'filename'),
             async ({ fullpath, slug, filename }) => {
+                console.log('fullpath', fullpath);
                 return Cp(fullpath, join(destinationDir, slug, filename));
             },
         );

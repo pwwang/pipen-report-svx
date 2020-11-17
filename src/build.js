@@ -1,5 +1,5 @@
 const fs = require('fs');
-// const fse = require('fs-extra');
+const fse = require('fs-extra');
 const path = require('path');
 const frontmatter = require('@github-docs/frontmatter')
 const yaml = require('js-yaml');
@@ -49,7 +49,7 @@ module.exports = function(options) {
     const datadir = path.join(srcdir, 'data');
     fs.mkdirSync(datadir);
     fs.copyFileSync(options.m, path.join(datadir, 'pipeline.json'));
-    fs.symlinkSync(
+    fse.copySync(
         path.join(rootdir, 'src', 'layouts'),
         path.join(srcdir, 'layouts')
     );
@@ -100,7 +100,7 @@ module.exports = function(options) {
     const pagesdir = path.join(srcdir, 'pages');
     fs.mkdirSync(pagesdir);
     if (hasCover) {
-        fs.symlinkSync(
+        fse.copySync(
             path.join(rootdir, 'src', 'pages', 'index'),
             path.join(pagesdir, 'index')
         );
@@ -138,8 +138,8 @@ ${content}
     });
 
     const cmd = commandExists.sync('yarn')
-        ? spawn('bash', ['-c', `cd ${options.tmpdir}; yarn; yarn build`])
-        : spawn('bash', ['-c', `cd ${options.tmpdir}; npm i; npm run build`]);
+        ? spawn('bash', ['-c', `cd ${options.tmpdir}; yarn 2>/dev/null; yarn build`])
+        : spawn('bash', ['-c', `cd ${options.tmpdir}; npm i 2>/dev/null; npm run build`]);
     cmd.stdout.pipe(process.stdout);
     cmd.stderr.pipe(process.stderr);
 };
