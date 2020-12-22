@@ -60,7 +60,7 @@
     "start": "webpack-dev-server --hot --inline --mode development"
   },
   "dependencies": {
-    "pipen-smelte": "0.0.2",
+    "pipen-smelte": "*",
     "svelte": "^3.14.1"
   }
 }
